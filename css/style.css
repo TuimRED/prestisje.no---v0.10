@@ -1,0 +1,137 @@
+/* --- Grunnleggende oppsett og variabler --- */
+:root {
+    --bg-color: #0A0A0A;
+    --text-color: #EAEAEA;
+    --accent-color: #B9933E; /* Adjusted gold color */
+    --accent-color-rgb: 185, 147, 62;
+    --accent-color-rgba: rgba(185, 147, 62, 0.4);
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { background-color: var(--bg-color); }
+
+body {
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    overflow: hidden; 
+}
+
+html.lenis { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* --- Preloader --- */
+#preloader {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-color);
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-in-out;
+}
+.preloader-line {
+    width: 1px;
+    height: 100px;
+    background-color: var(--accent-color);
+    animation: pulse 1.5s infinite ease-in-out;
+}
+@keyframes pulse {
+    0% { transform: scaleY(0.1); opacity: 0; }
+    50% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(0.1); opacity: 0; }
+}
+
+
+/* --- Korrekt Lagdeling --- */
+#visual-container {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0;
+}
+#visual-container canvas {
+    display: block; width: 100%; height: 100%;
+}
+
+.scroll-container { 
+    position: relative; 
+    z-index: 1; 
+}
+
+script[id*="Shader"] { display: none !important; }
+
+/* --- Innholdsstruktur --- */
+.screen-section {
+    width: 100%; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    text-align: center; padding: 2rem;
+}
+
+.content {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 1.5rem; max-width: 700px;
+}
+
+/* --- Typografi & Lesbarhet --- */
+h1 {
+    font-family: var(--font-serif); font-size: clamp(3.5rem, 10vw, 6.5rem);
+    font-weight: 700; letter-spacing: 0.05em; color: var(--text-color);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+h1 .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+.section-title {
+    font-family: var(--font-serif); font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 400; letter-spacing: 0.1em;
+    color: var(--text-color);
+    transform: translateY(50px);
+    opacity: 0;
+}
+
+p {
+    font-size: clamp(1rem, 2.5vw, 1.125rem); font-weight: 400;
+    line-height: 1.8; max-width: 550px;
+    transform: translateY(50px);
+    opacity: 0;
+}
+
+/* --- Det Digitale Håndtrykket --- */
+.contact-interactive {
+    margin-top: 1.5rem; display: flex; flex-direction: column;
+    align-items: center; gap: 1rem;
+    opacity: 0; /* Animeres inn */
+}
+
+.email-text { font-size: 1.125rem; letter-spacing: 0.05em; opacity: 0.8; }
+
+.copy-line {
+    width: 150px; height: 1px; background-color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 0 0px 0px var(--accent-color-rgba);
+}
+
+.copy-line:hover {
+    transform: scaleX(1.1);
+    box-shadow: 0 0 15px 3px var(--accent-color-rgba);
+}
+
+/* --- Responsivitet --- */
+@media (max-width: 768px) {
+    h1 { font-size: clamp(2.5rem, 15vw, 4rem); }
+    .section-title { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+    p { line-height: 1.7; }
+    .content { gap: 1.2rem; }
+}
