@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestisje | Digitalt Mesterverk</title>
-    <meta name="description" content="En manifestasjon av digitalt håndverk og strategisk intensjon.">
+    <title>Prestisje | Digitalt Nærvær</title>
+    <meta name="description" content="En manifestasjon av digitalt håndverk og strategisk intensjon. Der intensjon møter form.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,11 +22,11 @@
         <!-- Canvas blir injisert her av JavaScript -->
     </div>
 
-    <div class="scroll-container">
+    <main class="scroll-container" aria-label="Hovedinnhold">
         <section class="screen-section manifest-section">
             <div class="content">
                 <h1>PRESTISJE.</h1>
-                <p>Vi utforsker krysningspunktet mellom dristig visjon og teknisk perfeksjon, der hvert element er formet for å formidle en standard av ubestridelig autoritet.</p>
+                <p>Vi utforsker krysningspunktet mellom dristig visjon og teknisk perfeksjon. </p>
             </div>
         </section>
 
@@ -39,15 +39,16 @@
 
         <section class="screen-section contact-section">
             <div class="content">
-                <h2 class="section-title" id="contact-title">En Dialog.</h2>
-                <p>For henvendelser vedrørende Prestisje og tilknyttede muligheter.</p>
-                <div class="contact-interactive">
+                <h2 class="section-title" id="contact-title">Invitasjon.</h2>
+                <p>For dialog rundt potensialet som ligger i dette digitale lerretet og tilknyttede muligheter.</p>
+                <div class="contact-interactive" role="button" tabindex="0" aria-label="Kopier e-postadressen kontakt@prestisje.no">
                     <span class="email-text">toppsterk@gmail.com</span>
-                    <div class="copy-line" role="button" tabindex="0" aria-label="Kopier e-postadressen til utklippstavlen"></div>
+                    <div class="copy-line"></div>
+                    <span class="copy-confirmation" aria-live="polite"></span>
                 </div>
             </div>
         </section>
-    </div>
+    </main>
 
     <!-- ===== SHADERS (Final) ===== -->
     <script id="vertexShader" type="x-shader/x-vertex">
@@ -74,7 +75,7 @@
             float noiseAmplitude = mix(0.6, 0.0, progress);
             
             vec3 noisePos = position * noiseFrequency;
-            vNoise = snoise(noisePos + uTime * 0.05); // Slower time evolution
+            vNoise = snoise(noisePos + uTime * 0.05);
             float displacement = vNoise * noiseAmplitude;
             
             vec3 newPosition = position + normal * displacement;
@@ -98,14 +99,12 @@
         varying vec3 vPosition;
         varying float vNoise;
 
-        // ACES Filmic Tonemapping
         vec3 Uncharted2Tonemap(vec3 x) {
             float A = 0.15; float B = 0.50; float C = 0.10; float D = 0.20; float E = 0.02; float F = 0.30;
             return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
         }
 
         void main() {
-            // --- Lighting ---
             vec3 viewDirection = normalize(cameraPosition - vPosition);
             float fresnel = 1.0 - dot(viewDirection, vNormal);
             fresnel = pow(fresnel, 2.5);
@@ -113,28 +112,23 @@
             vec3 lightDirection = normalize(uLightPos - vPosition);
             float lightIntensity = max(0.0, dot(lightDirection, vNormal)) * 0.7 + 0.3;
             
-            // --- Color Calculation ---
             vec3 color = uColor * lightIntensity;
             color += uColor * fresnel * 0.3;
             
-            // --- Vignette for Readability ---
             vec2 uv = gl_FragCoord.xy / uResolution.xy;
             float vignetteDist = distance(uv, vec2(0.5));
             float vignette = smoothstep(0.25, 0.6, vignetteDist);
-            color *= mix(0.7, 1.0, vignette); // Darken center for text
+            color *= mix(0.7, 1.0, vignette);
 
-            // --- Glow Effects ---
             float coreGlow = smoothstep(0.0, 1.0, uHeartbeat);
             color += uColor * coreGlow * 0.5;
             color += uColor * uCopyGlow * 1.5;
 
-            // --- Tonemapping for Final Color ---
             vec3 finalColor = Uncharted2Tonemap(color * 1.5);
 
-            // --- Alpha ---
             float alphaNoise = (vNoise + 1.0) * 0.5;
             float baseAlpha = mix(0.25, 0.9, alphaNoise);
-            baseAlpha *= mix(0.6, 1.0, vignette); // More transparent in center
+            baseAlpha *= mix(0.6, 1.0, vignette);
             
             float finalAlpha = clamp(fresnel * 0.5 + baseAlpha + uHeartbeat + uCopyGlow, 0.0, 1.0);
 
@@ -143,14 +137,11 @@
     </script>
     <!-- ===================== -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js"></script>
     <script src="js/script.js" defer></script>
-
-        <!-- GoatCounter – trafikkmåling -->
-    <script data-goatcounter="https://hdii.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
