@@ -2,7 +2,7 @@
 :root {
     --bg-color: #0A0A0A;
     --text-color: #EAEAEA;
-    --accent-color: #B9933E; /* Adjusted gold color */
+    --accent-color: #B9933E; /* Justert gullfarge */
     --accent-color-rgb: 185, 147, 62;
     --accent-color-rgba: rgba(185, 147, 62, 0.4);
     --font-serif: 'Cormorant Garamond', serif;
@@ -17,13 +17,14 @@ body {
     color: var(--text-color);
     font-family: var(--font-sans);
     background-color: var(--bg-color);
-    overflow: hidden; 
+    /* overflow: hidden; -- Denne vil bli kontrollert av JS for å fikse mobil-bug */
 }
 
 html.lenis { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
+body.loading { overflow: hidden; }
 
 /* --- Preloader --- */
 #preloader {
@@ -48,13 +49,16 @@ html.lenis { height: auto; }
     100% { transform: scaleY(0.1); opacity: 0; }
 }
 
-
 /* --- Korrekt Lagdeling --- */
 #visual-container {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 0;
     opacity: 0;
+    pointer-events: none; /* Lar scroll-events passere gjennom */
+}
+#visual-container.interactive {
+    pointer-events: auto; /* Aktiveres etter intro */
 }
 #visual-container canvas {
     display: block; width: 100%; height: 100%;
@@ -63,6 +67,7 @@ html.lenis { height: auto; }
 .scroll-container { 
     position: relative; 
     z-index: 1; 
+    isolation: isolate; /* Ny stacking context for å unngå z-index problemer */
 }
 
 script[id*="Shader"] { display: none !important; }
@@ -110,22 +115,34 @@ p {
 /* --- Det Digitale Håndtrykket --- */
 .contact-interactive {
     margin-top: 1.5rem; display: flex; flex-direction: column;
-    align-items: center; gap: 1rem;
-    opacity: 0; /* Animeres inn */
+    align-items: center; gap: 0.75rem; /* Redusert gap */
+    opacity: 0;
+    position: relative;
+    cursor: pointer;
 }
 
-.email-text { font-size: 1.125rem; letter-spacing: 0.05em; opacity: 0.8; }
+.email-text { font-size: 1.125rem; letter-spacing: 0.05em; opacity: 0.8; transition: opacity 0.3s ease; }
 
 .copy-line {
     width: 150px; height: 1px; background-color: var(--accent-color);
-    cursor: pointer;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     box-shadow: 0 0 0px 0px var(--accent-color-rgba);
 }
 
-.copy-line:hover {
+.contact-interactive:hover .copy-line {
     transform: scaleX(1.1);
     box-shadow: 0 0 15px 3px var(--accent-color-rgba);
+}
+
+.copy-confirmation {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--accent-color);
+    opacity: 0;
+    position: absolute;
+    bottom: -30px;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 /* --- Responsivitet --- */
